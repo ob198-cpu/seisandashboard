@@ -42,7 +42,7 @@ Apps Script版は許可リストのアカウントのみ利用できます。ロ
 
 `gas/access.local.json` に許可メールアドレスのJSON配列を設定し、`node gas/build.mjs`、`node --test production.test.mjs gas/security.test.mjs`、`node gas/deploy.mjs` の順で実行します。デプロイには管理者の既存clasp認証が必要です。`gas/build/` は台帳ID・許可リスト・デプロイ設定を含む非公開生成物です。Gitへ登録しないでください。
 
-2026-09-30時点: 公開URL発行済み。公開画面での実データ検証は初回Google承認待ちです。
+2026-09-30: 公開版のSheets API未有効化による `403 SERVICE_DISABLED` を修正。マニフェストにSheets v4を宣言し、読取専用スコープを維持しています。公開画面で7/7事業所の取得を確認済みです。渡邊様アカウント・別PCでの実操作は未確認です。
 
 実データ・台帳ID・認証情報をリポジトリに登録しないでください。既存SNS画面と事業所側システムは変更していません。
 

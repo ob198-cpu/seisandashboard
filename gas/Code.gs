@@ -12,7 +12,11 @@ function report(officeKey,start,end,detail){
   const read=()=>{
     const url='https://sheets.googleapis.com/v4/spreadsheets/'+encodeURIComponent(office.id)+'/values/'+encodeURIComponent('Reports!N:N')+'?valueRenderOption=UNFORMATTED_VALUE';
     const response=UrlFetchApp.fetch(url,{method:'get',headers:{Authorization:'Bearer '+ScriptApp.getOAuthToken()},muteHttpExceptions:true});
-    if(response.getResponseCode()!==200)throw Error('台帳を読み取れません。このGoogleアカウントの閲覧権限を確認してください。');
+    if(response.getResponseCode()!==200){
+      let error;try{error=JSON.parse(response.getContentText()).error;}catch{}
+      const reason=error?.details?.find(d=>d.reason)?.reason||error?.errors?.[0]?.reason||'UNKNOWN';
+      throw Error('SHEETS_HTTP_'+response.getResponseCode()+'_'+String(reason).replace(/[^A-Za-z_]/g,''));
+    }
     const values=JSON.parse(response.getContentText()).values||[];
     if(values[0]?.[0]!=='json')throw Error('台帳の列構成が一致しません。');
     return values.slice(1).map(row=>row[0]).filter(v=>v!==undefined&&v!==null&&v!=='');

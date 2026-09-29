@@ -1,6 +1,13 @@
 const rpc=(method,...args)=>new Promise((resolve,reject)=>{
   const timer=setTimeout(()=>reject(Error('取得が時間切れになりました。再取得してください。')),90000);
-  google.script.run.withSuccessHandler(value=>{clearTimeout(timer);resolve(value);}).withFailureHandler(()=>{clearTimeout(timer);reject(Error('取得できません。ログインアカウント・台帳の閲覧権限を確認してください。'));})[method](...args);
+  google.script.run.withSuccessHandler(value=>{clearTimeout(timer);resolve(value);}).withFailureHandler(error=>{
+    clearTimeout(timer);
+    const message=String(error?.message||'');
+    const code=message.match(/SHEETS_HTTP_\d{3}_[A-Za-z_]+/)?.[0];
+    const known=['台帳の列構成が一致しません。','このGoogleアカウントには閲覧権限がありません。','集計期間が不正です。','対象外の事業所です。','取得中に記録が変わったため、再取得してください。'].find(text=>message.includes(text));
+    const runtime=message.match(/(?:ReferenceError|TypeError): [A-Za-z_][A-Za-z_0-9 .]{0,100}/)?.[0];
+    reject(Error(code?'台帳取得エラー（'+code+'）':known|| (runtime?'公開版の処理エラー（'+runtime+'）':'取得に失敗しました。公開版の処理またはGoogleの承認状態を確認してください。')));
+  })[method](...args);
 });
 const catalog=await rpc('offices');
 let cloudRows=[],cloudPeriod='',cloudRunning=false,cloudStarted=0;
