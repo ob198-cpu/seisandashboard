@@ -30,7 +30,19 @@
 
 ## 公開運用について
 
-このリポジトリはNodeサーバーを含み、GitHub Pagesだけでは動きません。初期設定はこのPC内からのみ接続できます。他のPCへの公開には、認証・事業所別認可・HTTPSを備えたサーバー構築が別途必要です。個人明細を含むため、単純に待受アドレスを外部へ開放しないでください。
+Node版はこのPC内専用です。別途、Googleログイン必須のApps Script版を用意しています。GitHub PagesではなくGoogle上で稼働し、このPCの電源に依存しません。
+
+公開URL: https://script.google.com/macros/s/AKfycbwjHIbpLVmZO1csKtLXYkuy7TRi9Hj0kepECCY4lPa_40LXnLTa3Np8VKhi0mO2t2XNHg/exec
+
+Apps Script版は許可リストのアカウントのみ利用できます。ログインした本人の権限で台帳を読み取るため、元台帳の閲覧権限も必要です。初回はGoogleの承認が必要で、自作の未審査アプリ警告が表示される場合があります。アプリへの許可は読取専用です。
+
+公開版は一覧に集計だけを返し、利用者明細は事業所詳細を開いた時に取得します。全公開関数で認証し、集計はローカル版と同じ処理から生成します。元台帳の共有権限は変更しません。公開版はページ内メモリーの集計キャッシュのみで、サーバーに個人明細を永続保存しません。
+
+### 公開版の更新（管理者用）
+
+`gas/access.local.json` に許可メールアドレスのJSON配列を設定し、`node gas/build.mjs`、`node --test production.test.mjs gas/security.test.mjs`、`node gas/deploy.mjs` の順で実行します。デプロイには管理者の既存clasp認証が必要です。`gas/build/` は台帳ID・許可リスト・デプロイ設定を含む非公開生成物です。Gitへ登録しないでください。
+
+2026-09-30時点: 公開URL発行済み。公開画面での実データ検証は初回Google承認待ちです。
 
 実データ・台帳ID・認証情報をリポジトリに登録しないでください。既存SNS画面と事業所側システムは変更していません。
 

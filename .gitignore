@@ -3,3 +3,5 @@ config.local.json
 node_modules/
 .env*
 test-results/
+gas/build/
+gas/access.local.json
